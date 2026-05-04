@@ -42,7 +42,7 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
             </nav>
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-                
+
                 <main className="lg:w-2/3 space-y-6">
                     {flash?.success && (
                         <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-800 flex items-center gap-3 shadow-sm">
@@ -50,7 +50,7 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                             <span className="text-sm font-medium">{flash.success}</span>
                         </div>
                     )}
-                    {Object.values(errors || {}).map((err: any, i) => (
+                    {Object.values(errors || {}).map((err: any) => (
                         <div className="rounded-xl bg-rose-50 border border-rose-200 p-4 text-rose-800 flex items-center gap-3 shadow-sm">
                             <svg className="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span className="text-sm font-medium">{err}</span>
@@ -98,7 +98,7 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                                                 <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Net Pay</div>
                                                 <div className="font-bold text-lg text-slate-900">Rp {payroll.total_salary.toLocaleString()}</div>
                                             </div>
-                                            <Link 
+                                            <Link
                                                 href={`/payrolls/${payroll.id}`}
                                                 className="px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
                                             >
@@ -126,7 +126,7 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Select Employee</label>
-                                    <select 
+                                    <select
                                         value={generateForm.data.employee_id}
                                         onChange={e => generateForm.setData('employee_id', e.target.value)}
                                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
@@ -155,8 +155,8 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-1">Year</label>
-                                        <input 
-                                            type="number" 
+                                        <input
+                                            type="number"
                                             value={generateForm.data.year}
                                             onChange={e => generateForm.setData('year', Number(e.target.value))}
                                             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
@@ -166,8 +166,8 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                                 </div>
                             </div>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={generateForm.processing}
                                 className="w-full bg-blue-600 text-white px-6 py-3.5 text-sm font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-500/30 flex justify-center items-center gap-2"
                             >

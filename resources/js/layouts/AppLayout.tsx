@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface Props {
     children: ReactNode;
@@ -11,7 +11,10 @@ export default function AppLayout({ children, title }: Props) {
 
     // Helper to determine if a link is active
     const isActive = (path: string) => {
-        if (typeof window === 'undefined') return false;
+        if (typeof window === 'undefined') {
+return false;
+}
+
         return window.location.pathname === path || window.location.pathname.startsWith(path + '/');
     };
 

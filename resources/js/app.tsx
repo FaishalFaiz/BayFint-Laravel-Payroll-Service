@@ -7,14 +7,19 @@ createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     resolve: (name) => {
         const pages = import.meta.glob('./pages/**/*.tsx', { eager: true });
-        let page = pages[`./pages/${name}.tsx`] || pages[`./pages/${name}/index.tsx`];
+        const page = pages[`./pages/${name}.tsx`] || pages[`./pages/${name}/index.tsx`];
+
         if (!page) {
             console.error(`Inertia Page not found: ${name}. Searched in:`, Object.keys(pages));
         }
+
         return page;
     },
     setup({ el, App, props }) {
-        if (!el) return;
+        if (!el) {
+return;
+}
+
         createRoot(el).render(<App {...props} />);
     },
     progress: {
