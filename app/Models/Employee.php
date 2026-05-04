@@ -3,15 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Models\Scopes\TenantScope;
 
-class Employee extends Model
+#[ScopedBy([TenantScope::class])]
+class Employee extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
-        'user_id',
+        'room_id',
         'name',
+        'email',
+        'password',
         'position',
         'join_date',
         'base_salary',
@@ -19,9 +25,26 @@ class Employee extends Model
         'deduction',
     ];
 
-    public function user()
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
     {
-        return $this->belongsTo(User::class);
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 
     public function payrolls()

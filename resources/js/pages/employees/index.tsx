@@ -1,10 +1,10 @@
-import AppLayout from '@/layouts/AppLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface Employee {
     id: number;
     name: string;
+    email: string;
     position: string;
     join_date: string;
     base_salary: number;
@@ -14,236 +14,235 @@ interface Employee {
 
 interface Props {
     employees: Employee[];
+    flash?: { success?: string };
+    errors?: any;
 }
 
-export default function EmployeeIndex({ employees }: Props) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+export default function EmployeesIndex({ employees, flash, errors }: Props) {
+    const [editingId, setEditingId] = useState<number | null>(null);
 
-    const { data, setData, post, put, delete: destroy, processing, reset, errors } = useForm({
-        name: '',
+    const editForm = useForm({
         position: '',
-        join_date: '',
         base_salary: 0,
         allowance: 0,
         deduction: 0,
     });
 
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(amount);
-    };
-
-    const handleEdit = (employee: Employee) => {
-        setSelectedEmployee(employee);
-        setData({
-            name: employee.name,
-            position: employee.position,
-            join_date: employee.join_date,
-            base_salary: employee.base_salary,
-            allowance: employee.allowance,
-            deduction: employee.deduction,
+    const startEditing = (emp: Employee) => {
+        setEditingId(emp.id);
+        editForm.setData({
+            position: emp.position,
+            base_salary: emp.base_salary,
+            allowance: emp.allowance || 0,
+            deduction: emp.deduction || 0,
         });
-        setIsEditing(true);
     };
 
-    const handleCancel = () => {
-        setIsEditing(false);
-        setSelectedEmployee(null);
-        reset();
+    const cancelEditing = () => {
+        setEditingId(null);
+        editForm.reset();
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const saveEdit = (e: React.FormEvent, id: number) => {
         e.preventDefault();
-        if (selectedEmployee) {
-            put(`/employees/${selectedEmployee.id}`, {
-                onSuccess: () => handleCancel(),
-            });
-        } else {
-            post('/employees', {
-                onSuccess: () => reset(),
-            });
-        }
-    };
-
-    const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this employee?')) {
-            destroy(`/employees/${id}`);
-        }
+        editForm.put(`/employees/${id}`, {
+            onSuccess: () => setEditingId(null)
+        });
     };
 
     return (
-        <AppLayout title="Employee Management">
-            <Head title="Employees" />
+        <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+            <Head title="Employee Directory | BayFint" />
 
-            <div className="grid gap-8 lg:grid-cols-3">
-                {/* Form Section */}
-                <div className="lg:col-span-1">
-                    <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 className="mb-6 text-lg font-bold text-slate-800">
-                            {isEditing ? 'Edit Employee' : 'Add New Employee'}
-                        </h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700">Full Name</label>
-                                <input
-                                    type="text"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    className="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                    placeholder="e.g. John Doe"
-                                />
-                                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+            <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-200">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <span className="text-xl font-bold tracking-tight text-slate-900">Bay<span className="text-blue-600">Fint</span></span>
+                    </div>
+                    <div className="flex items-center space-x-6">
+                        <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                            Back to Dashboard
+                        </Link>
+                    </div>
+                </div>
+            </nav>
+
+            <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto space-y-8">
+                {flash?.success && (
+                    <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-800 flex items-center gap-3 shadow-sm">
+                        <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span className="text-sm font-medium">{flash.success}</span>
+                    </div>
+                )}
+                {Object.values(errors || {}).map((err: any, i) => (
+                    <div key={i} className="rounded-xl bg-rose-50 border border-rose-200 p-4 text-rose-800 flex items-center gap-3 shadow-sm">
+                        <svg className="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span className="text-sm font-medium">{err}</span>
+                    </div>
+                ))}
+
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            Team Management
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900">
+                            Employee Directory
+                        </h1>
+                    </div>
+                    <div className="text-sm text-slate-500 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100 max-w-sm">
+                        Employees self-register via your <Link href="/dashboard" className="text-blue-600 font-semibold hover:underline">Room Code</Link>. Configure their compensation details below.
+                    </div>
+                </header>
+
+                <div className="space-y-4">
+                    {employees.length === 0 ? (
+                        <div className="bg-white p-12 text-center rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center">
+                            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
+                                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700">Position</label>
-                                <input
-                                    type="text"
-                                    value={data.position}
-                                    onChange={(e) => setData('position', e.target.value)}
-                                    className="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                    placeholder="e.g. Software Engineer"
-                                />
-                                {errors.position && <p className="mt-1 text-xs text-red-500">{errors.position}</p>}
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700">Join Date</label>
-                                <input
-                                    type="date"
-                                    value={data.join_date}
-                                    onChange={(e) => setData('join_date', e.target.value)}
-                                    className="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                />
-                                {errors.join_date && <p className="mt-1 text-xs text-red-500">{errors.join_date}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700">Base Salary</label>
-                                    <div className="relative mt-1">
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">Rp</span>
-                                        <input
-                                            type="number"
-                                            value={data.base_salary}
-                                            onChange={(e) => setData('base_salary', Number(e.target.value))}
-                                            className="block w-full rounded-xl border-slate-200 bg-slate-50 pl-10 pr-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                        />
+                            <h3 className="text-lg font-bold text-slate-900 mb-1">No employees found</h3>
+                            <p className="text-slate-500">Your directory is currently empty. Employees will appear here once they register.</p>
+                        </div>
+                    ) : (
+                        employees.map(emp => (
+                            <div key={emp.id} className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden transition-all hover:shadow-md">
+                                {editingId === emp.id ? (
+                                    <form onSubmit={(e) => saveEdit(e, emp.id)} className="p-6 md:p-8 bg-blue-50/30">
+                                        <div className="mb-6 pb-6 border-b border-slate-200 flex justify-between items-center">
+                                            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                Editing {emp.name}'s Profile
+                                            </h3>
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Position / Job Title</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={editForm.data.position} 
+                                                        onChange={e => editForm.setData('position', e.target.value)}
+                                                        className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Base Salary (Rp)</label>
+                                                    <input 
+                                                        type="number" 
+                                                        value={editForm.data.base_salary} 
+                                                        onChange={e => editForm.setData('base_salary', Number(e.target.value))}
+                                                        className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm font-mono"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-emerald-700 mb-1">Fixed Monthly Allowance (+)</label>
+                                                    <input 
+                                                        type="number" 
+                                                        value={editForm.data.allowance} 
+                                                        onChange={e => editForm.setData('allowance', Number(e.target.value))}
+                                                        className="w-full px-4 py-2.5 bg-white border border-emerald-200 focus:border-emerald-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm font-mono"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-rose-700 mb-1">Fixed Monthly Deduction (-)</label>
+                                                    <input 
+                                                        type="number" 
+                                                        value={editForm.data.deduction} 
+                                                        onChange={e => editForm.setData('deduction', Number(e.target.value))}
+                                                        className="w-full px-4 py-2.5 bg-white border border-rose-200 focus:border-rose-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all shadow-sm font-mono"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-3 mt-8">
+                                            <button 
+                                                type="submit" 
+                                                disabled={editForm.processing}
+                                                className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm"
+                                            >
+                                                Save Changes
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onClick={cancelEditing}
+                                                className="px-6 py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    <div className="flex flex-col md:flex-row justify-between p-6 md:p-8 gap-6">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg shrink-0">
+                                                {emp.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-3 mb-1">
+                                                    <h3 className="text-xl font-bold text-slate-900">{emp.name}</h3>
+                                                    <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-semibold rounded-md border border-slate-200">ID: {emp.id}</span>
+                                                </div>
+                                                <div className="text-sm font-medium text-slate-600 mb-2">{emp.position || 'No Position Set'}</div>
+                                                <div className="text-xs text-slate-400 flex items-center gap-1">
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                                    {emp.email}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center w-full md:w-auto">
+                                            <div className="space-y-1 bg-slate-50 p-4 rounded-2xl border border-slate-100 w-full md:w-auto min-w-[200px]">
+                                                <div className="flex justify-between text-sm">
+                                                    <span className="text-slate-500">Base Salary</span>
+                                                    <span className="font-bold text-slate-900">Rp {emp.base_salary.toLocaleString()}</span>
+                                                </div>
+                                                {emp.allowance > 0 && (
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-emerald-600">Allowance</span>
+                                                        <span className="font-medium text-emerald-700">+Rp {emp.allowance.toLocaleString()}</span>
+                                                    </div>
+                                                )}
+                                                {emp.deduction > 0 && (
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-rose-600">Deduction</span>
+                                                        <span className="font-medium text-rose-700">-Rp {emp.deduction.toLocaleString()}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
+                                            <div className="flex md:flex-col gap-3 w-full md:w-auto">
+                                                <button 
+                                                    onClick={() => startEditing(emp)}
+                                                    className="flex-1 md:w-full px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-50 transition-colors shadow-sm text-center"
+                                                >
+                                                    Edit Profile
+                                                </button>
+                                                <Link 
+                                                    href={`/employees/${emp.id}`}
+                                                    method="delete"
+                                                    as="button"
+                                                    className="flex-1 md:w-full px-4 py-2 bg-rose-50 text-rose-600 text-sm font-semibold rounded-xl hover:bg-rose-100 transition-colors text-center"
+                                                >
+                                                    Remove
+                                                </Link>
+                                            </div>
+                                        </div>
                                     </div>
-                                    {errors.base_salary && <p className="mt-1 text-xs text-red-500">{errors.base_salary}</p>}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700">Allowance</label>
-                                    <input
-                                        type="number"
-                                        value={data.allowance}
-                                        onChange={(e) => setData('allowance', Number(e.target.value))}
-                                        className="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700">Deduction</label>
-                                    <input
-                                        type="number"
-                                        value={data.deduction}
-                                        onChange={(e) => setData('deduction', Number(e.target.value))}
-                                        className="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2 text-sm transition-focus focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex space-x-3 pt-4">
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="flex-1 rounded-xl bg-blue-600 px-4 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/30 transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-                                >
-                                    {isEditing ? 'Update Employee' : 'Create Employee'}
-                                </button>
-                                {isEditing && (
-                                    <button
-                                        type="button"
-                                        onClick={handleCancel}
-                                        className="rounded-xl border border-slate-200 px-4 py-2.5 font-semibold text-slate-600 transition-colors hover:bg-slate-50"
-                                    >
-                                        Cancel
-                                    </button>
                                 )}
                             </div>
-                        </form>
-                    </div>
-                </div>
-
-                {/* Table Section */}
-                <div className="lg:col-span-2">
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-slate-50 text-slate-500">
-                                    <tr>
-                                        <th className="px-6 py-4 font-semibold">Employee</th>
-                                        <th className="px-6 py-4 font-semibold">Position</th>
-                                        <th className="px-6 py-4 font-semibold">Base Salary</th>
-                                        <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {employees.map((employee) => (
-                                        <tr key={employee.id} className="group transition-colors hover:bg-slate-50/50">
-                                            <td className="px-6 py-4">
-                                                <div className="font-semibold text-slate-900">{employee.name}</div>
-                                                <div className="text-xs text-slate-400">Joined {new Date(employee.join_date).toLocaleDateString()}</div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600">
-                                                    {employee.position}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 font-medium text-slate-700">
-                                                {formatCurrency(employee.base_salary)}
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex justify-end space-x-2 opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <button
-                                                        onClick={() => handleEdit(employee)}
-                                                        className="rounded-lg bg-slate-100 p-2 text-slate-600 hover:bg-blue-100 hover:text-blue-600"
-                                                    >
-                                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(employee.id)}
-                                                        className="rounded-lg bg-slate-100 p-2 text-slate-600 hover:bg-red-100 hover:text-red-600"
-                                                    >
-                                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {employees.length === 0 && (
-                                        <tr>
-                                            <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
-                                                No employees found. Add one to get started!
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        ))
+                    )}
                 </div>
             </div>
-        </AppLayout>
+        </div>
     );
 }

@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class AuthController extends Controller
+class AdminAuthController extends Controller
 {
     public function showLogin()
     {
-        return Inertia::render('auth/login');
+        return Inertia::render('auth/adminLogin');
     }
 
     public function login(Request $request)
@@ -34,7 +34,7 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        return Inertia::render('auth/register');
+        return Inertia::render('auth/adminRegister');
     }
 
     public function register(Request $request)
@@ -51,14 +51,18 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user);
+        $user->room()->create([
+            'name' => $request->name . "'s Payroll",
+        ]);
+
+        Auth::guard('web')->login($user);
 
         return redirect('/dashboard');
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');

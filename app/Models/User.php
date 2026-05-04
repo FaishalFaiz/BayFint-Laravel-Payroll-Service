@@ -30,8 +30,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function employees()
+    public function room()
     {
-        return $this->hasMany(Employee::class);
+        return $this->hasOne(Room::class);
     }
 }

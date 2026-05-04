@@ -1,174 +1,132 @@
 import { Head, Link } from '@inertiajs/react';
 
-interface Payroll {
-    id: number;
-    month: number;
-    year: number;
-    days_present: number;
-    total_salary: number;
-    employee: {
-        name: string;
-        position: string;
-        base_salary: number;
-        allowance: number;
-        deduction: number;
-    };
-    created_at: string;
-}
-
 interface Props {
-    payroll: Payroll;
+    payroll: any;
 }
 
 export default function Payslip({ payroll }: Props) {
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(amount);
-    };
-
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    const handlePrint = () => {
-        window.print();
-    };
+    const d = payroll.details;
 
     return (
-        <div className="min-h-screen bg-slate-100 py-12 font-sans text-slate-900 print:bg-white print:py-0">
-            <Head title={`Payslip - ${payroll.employee.name} - ${monthNames[payroll.month - 1]} ${payroll.year}`} />
+        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 py-12 px-6 flex justify-center">
+            <Head title={`Payslip | ${payroll.employee.name}`} />
 
-            <div className="mx-auto max-w-3xl">
-                {/* Actions (Hidden on print) */}
-                <div className="mb-6 flex items-center justify-between px-4 print:hidden">
-                    <Link
+            <div className="w-full max-w-3xl">
+                {/* Print Controls */}
+                <div className="mb-6 flex justify-between items-center print:hidden">
+                    <Link 
                         href="/payrolls"
-                        className="flex items-center text-sm font-medium text-slate-600 hover:text-blue-600"
+                        className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm"
                     >
-                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Payroll List
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Back to Vault
                     </Link>
-                    <button
-                        onClick={handlePrint}
-                        className="rounded-xl bg-blue-600 px-6 py-2.5 font-bold text-white shadow-lg shadow-blue-500/30 transition-transform hover:scale-105 active:scale-95"
+                    <button 
+                        onClick={() => window.print()}
+                        className="flex items-center gap-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/30"
                     >
-                        Print Payslip
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                        Print Document
                     </button>
                 </div>
 
                 {/* Payslip Document */}
-                <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/50 print:rounded-none print:shadow-none">
+                <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden print:shadow-none print:border-none print:rounded-none">
+                    
                     {/* Header */}
-                    <div className="border-b border-slate-100 bg-slate-50/50 px-10 py-12">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <h1 className="text-3xl font-black tracking-tight text-slate-900">
-                                    BAY<span className="text-blue-600">FINT</span>
-                                </h1>
-                                <p className="mt-1 text-sm text-slate-400 font-medium">Payroll Service System</p>
+                    <div className="bg-slate-900 p-8 text-white flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
-                            <div className="text-right">
-                                <h2 className="text-xl font-bold text-slate-800 uppercase tracking-wider">Salary Slip</h2>
-                                <p className="text-sm text-slate-500 font-medium">{monthNames[payroll.month - 1]} {payroll.year}</p>
+                            <div>
+                                <h1 className="text-2xl font-black tracking-tight">BayFint</h1>
+                                <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-0.5">Official Payslip</p>
                             </div>
                         </div>
+                        <div className="text-right">
+                            <div className="text-3xl font-extrabold text-white">Rp {payroll.total_salary.toLocaleString()}</div>
+                            <div className="text-sm font-medium text-blue-300 mt-1">Net Pay Total</div>
+                        </div>
+                    </div>
 
-                        <div className="mt-12 grid grid-cols-2 gap-8">
-                            <div>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Employee Details</p>
-                                <div className="mt-2">
-                                    <p className="text-lg font-bold text-slate-900">{payroll.employee.name}</p>
-                                    <p className="text-sm text-slate-600">{payroll.employee.position}</p>
-                                </div>
+                    {/* Metadata Box */}
+                    <div className="p-8 border-b border-slate-100 grid md:grid-cols-2 gap-8 bg-slate-50/50">
+                        <div>
+                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Employee Details</h3>
+                            <div className="space-y-1">
+                                <div className="text-lg font-bold text-slate-900">{payroll.employee.name}</div>
+                                <div className="text-sm text-slate-600">{payroll.employee.position}</div>
+                                <div className="text-sm text-slate-500 mt-2">ID: #{payroll.employee.id}</div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Payment Info</p>
-                                <div className="mt-2">
-                                    <p className="text-sm text-slate-600">ID: #PAY-{payroll.id.toString().padStart(5, '0')}</p>
-                                    <p className="text-sm text-slate-600">Date: {new Date(payroll.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <div className="md:text-right">
+                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Payment Period</h3>
+                            <div className="space-y-1">
+                                <div className="text-lg font-bold text-slate-900">
+                                    {new Date(payroll.year, payroll.month - 1).toLocaleString('default', { month: 'long' })} {payroll.year}
+                                </div>
+                                <div className="text-sm text-slate-600">Generated: {new Date(payroll.created_at).toLocaleDateString()}</div>
+                                <div className="text-sm text-slate-500 mt-2">
+                                    Status: <span className="text-emerald-600 font-semibold uppercase">{payroll.status}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Breakdown */}
-                    <div className="px-10 py-10">
-                        <div className="grid grid-cols-2 gap-12">
-                            {/* Earnings */}
-                            <div>
-                                <h3 className="border-b border-slate-200 pb-2 text-sm font-bold text-slate-800 uppercase tracking-wide">Earnings</h3>
-                                <div className="mt-4 space-y-3">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Base Salary</span>
-                                        <span className="font-semibold text-slate-700">{formatCurrency(payroll.employee.base_salary)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Allowances</span>
-                                        <span className="font-semibold text-slate-700">{formatCurrency(payroll.employee.allowance)}</span>
-                                    </div>
-                                    <div className="mt-4 border-t border-slate-100 pt-3 flex justify-between font-bold text-slate-900">
-                                        <span>Total Earnings</span>
-                                        <span>{formatCurrency(Number(payroll.employee.base_salary) + Number(payroll.employee.allowance))}</span>
-                                    </div>
-                                </div>
+                    {/* Ledger Details */}
+                    <div className="p-8">
+                        <div className="rounded-2xl border border-slate-200 overflow-hidden">
+                            <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <div>Description</div>
+                                <div>Amount</div>
                             </div>
+                            
+                            <div className="divide-y divide-slate-100">
+                                {/* Earnings Section */}
+                                <div className="px-6 py-4 flex items-center gap-3 bg-emerald-50/50">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                                    <h4 className="font-bold text-emerald-800">Earnings</h4>
+                                </div>
+                                
+                                <div className="px-6 py-4 flex justify-between items-center">
+                                    <div className="text-sm font-medium text-slate-700">Base Salary</div>
+                                    <div className="font-semibold text-slate-900">Rp {d.base_salary.toLocaleString()}</div>
+                                </div>
+                                <div className="px-6 py-4 flex justify-between items-center">
+                                    <div className="text-sm font-medium text-slate-700">Fixed Allowance</div>
+                                    <div className="font-semibold text-slate-900">Rp {d.fixed_allowance.toLocaleString()}</div>
+                                </div>
 
-                            {/* Deductions */}
-                            <div>
-                                <h3 className="border-b border-slate-200 pb-2 text-sm font-bold text-slate-800 uppercase tracking-wide">Deductions</h3>
-                                <div className="mt-4 space-y-3">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Fixed Deductions</span>
-                                        <span className="font-semibold text-red-600">({formatCurrency(payroll.employee.deduction)})</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Absence Deductions</span>
-                                        <span className="font-semibold text-slate-400">-</span>
-                                    </div>
-                                    <div className="mt-4 border-t border-slate-100 pt-3 flex justify-between font-bold text-slate-900">
-                                        <span>Total Deductions</span>
-                                        <span className="text-red-600">{formatCurrency(payroll.employee.deduction)}</span>
-                                    </div>
+                                {/* Deductions Section */}
+                                <div className="px-6 py-4 flex items-center gap-3 bg-rose-50/50">
+                                    <svg className="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                                    <h4 className="font-bold text-rose-800">Deductions</h4>
+                                </div>
+
+                                <div className="px-6 py-4 flex justify-between items-center">
+                                    <div className="text-sm font-medium text-slate-700">Fixed Deduction</div>
+                                    <div className="font-semibold text-rose-600">-Rp {d.fixed_deduction.toLocaleString()}</div>
+                                </div>
+                                <div className="px-6 py-4 flex justify-between items-center">
+                                    <div className="text-sm font-medium text-slate-700">Lateness Penalty ({d.days_present} Days Present)</div>
+                                    <div className="font-semibold text-rose-600">-Rp {d.total_lateness_penalty.toLocaleString()}</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Attendance Summary */}
-                        <div className="mt-12 rounded-xl bg-slate-50 p-6 flex justify-between items-center border border-slate-100">
-                            <div>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Attendance Record</p>
-                                <p className="mt-1 text-sm font-bold text-slate-700">{payroll.days_present} Days Present</p>
+                        {/* Footer Summary */}
+                        <div className="mt-8 flex items-center justify-between p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                            <div className="text-sm text-blue-800 max-w-sm">
+                                This document is an immutable record. For any discrepancies, please contact your administrator.
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Net Take-Home Pay</p>
-                                <p className="mt-1 text-2xl font-black text-blue-600">{formatCurrency(payroll.total_salary)}</p>
-                            </div>
-                        </div>
-
-                        {/* Signature Area */}
-                        <div className="mt-20 flex justify-between px-4">
-                            <div className="text-center">
-                                <div className="mb-16 h-px w-48 bg-slate-200" />
-                                <p className="text-xs font-bold text-slate-400 uppercase">Employee Signature</p>
-                            </div>
-                            <div className="text-center">
-                                <div className="mb-16 h-px w-48 bg-slate-200" />
-                                <p className="text-xs font-bold text-slate-400 uppercase">Finance Admin</p>
+                                <div className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-1">Take Home Pay</div>
+                                <div className="text-3xl font-black text-blue-900">Rp {payroll.total_salary.toLocaleString()}</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Footer Note */}
-                    <div className="bg-slate-50/50 px-10 py-6 text-center text-[10px] text-slate-400 font-medium">
-                        This is a computer-generated payslip and does not require a physical signature.
-                        <br />Generated via BayFint Payroll Service.
-                    </div>
                 </div>
             </div>
         </div>

@@ -11,23 +11,32 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        if (auth('employee')->check()) {
+            $employee = auth('employee')->user();
+            return Inertia::render('employee/dashboard', [
+                'employee' => $employee,
+                'attendances' => $employee->attendances()->latest()->take(5)->get(),
+                'payrolls' => $employee->payrolls()->latest()->take(5)->get(),
+            ]);
+        }
+
+        // Admin Dashboard
+        $user = auth('web')->user();
+        $room = $user->room;
         
-        // Only get data for the authenticated user
-        $employeeIds = $user->employees()->pluck('id');
+        $totalEmployees = Employee::count(); // Scoped automatically!
         
-        $totalEmployees = $user->employees()->count();
-        $totalPayrollThisMonth = Payroll::whereIn('employee_id', $employeeIds)
-            ->where('month', now()->month)
+        $totalPayrollThisMonth = Payroll::where('month', now()->month)
             ->where('year', now()->year)
             ->sum('total_salary');
             
-        $pendingProcess = $totalEmployees - Payroll::whereIn('employee_id', $employeeIds)
-            ->where('month', now()->month)
+        $pendingProcess = $totalEmployees - Payroll::where('month', now()->month)
             ->where('year', now()->year)
             ->count();
 
         return Inertia::render('dashboard', [
+            'room' => $room,
+            'categories' => \App\Models\PayrollCategory::all(), // Scoped!
             'stats' => [
                 'total_employees' => $totalEmployees,
                 'total_payroll' => $totalPayrollThisMonth,

@@ -2,31 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\TenantScope;
 
 #[ScopedBy([TenantScope::class])]
-class Payroll extends Model
+class Attendance extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'employee_id',
         'room_id',
-        'month',
-        'year',
-        'days_present',
-        'total_salary',
+        'date',
+        'clock_in',
+        'clock_out',
         'status',
-        'details',
+        'minutes_late',
+        'lateness_penalty',
     ];
 
     protected function casts(): array
     {
         return [
-            'details' => 'array',
+            'date' => 'date',
+            'clock_in' => 'datetime',
+            'clock_out' => 'datetime',
         ];
     }
 
