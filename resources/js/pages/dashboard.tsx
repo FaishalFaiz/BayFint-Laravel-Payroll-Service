@@ -17,13 +17,14 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
     const [activeTab, setActiveTab] = useState('overview');
 
     const settingsForm = useForm({
+        name: room?.name || '',
         shift_start_time: room?.shift_start_time || '08:00',
         shift_end_time: room?.shift_end_time || '17:00',
         lateness_penalty_per_minute: room?.lateness_penalty_per_minute || 0,
     });
 
     const codeForm = useForm({});
-    
+
     const categoryForm = useForm({
         name: '',
         type: 'earning',
@@ -54,12 +55,12 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
             {/* Topbar */}
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-200">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-                    <div className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-md">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
                         <span className="text-xl font-bold tracking-tight text-slate-900">Bay<span className="text-blue-600">Fint</span></span>
-                    </div>
+                    </Link>
                     <div className="flex items-center space-x-6 text-sm font-medium">
                         <span className="text-slate-500 hidden sm:inline-block">Welcome, {auth.user.name}</span>
                         <Link href="/logout" method="post" as="button" className="text-slate-600 hover:text-blue-600 transition-colors">
@@ -70,27 +71,27 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
             </nav>
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Sidebar Navigation */}
                 <aside className="lg:w-64 shrink-0">
                     <div className="sticky top-28 bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
                         <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3">Menu</div>
                         <nav className="space-y-1">
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('overview')}
                                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === 'overview' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                                 Overview
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('configuration')}
                                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === 'configuration' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                 Room Settings
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('categories')}
                                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === 'categories' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
                             >
@@ -101,14 +102,14 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
 
                         <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-8 mb-4 px-3">Management</div>
                         <nav className="space-y-1">
-                            <Link 
+                            <Link
                                 href="/employees"
                                 className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                                 Employees
                             </Link>
-                            <Link 
+                            <Link
                                 href="/payrolls"
                                 className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                             >
@@ -150,7 +151,7 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-900 mb-1">Room Access Code</h3>
                                     <p className="text-sm text-slate-500">
-                                        {isCodeActive 
+                                        {isCodeActive
                                             ? `Share this code with employees to let them register into your room.`
                                             : 'No active room code. Generate one to allow new registrations.'}
                                     </p>
@@ -160,7 +161,7 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                         </div>
                                     )}
                                 </div>
-                                <button 
+                                <button
                                     onClick={generateCode}
                                     disabled={codeForm.processing}
                                     className="px-6 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-full hover:bg-slate-800 transition-colors whitespace-nowrap shadow-sm"
@@ -175,11 +176,22 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900">Room Settings</h2>
                             <form onSubmit={updateSettings} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Workspace Name</label>
+                                    <input
+                                        type="text"
+                                        value={settingsForm.data.name}
+                                        onChange={e => settingsForm.setData('name', e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                                        required
+                                    />
+                                </div>
+
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-medium text-slate-700 mb-2">Shift Start Time</label>
-                                        <input 
-                                            type="time" 
+                                        <input
+                                            type="time"
                                             value={settingsForm.data.shift_start_time}
                                             onChange={e => settingsForm.setData('shift_start_time', e.target.value)}
                                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
@@ -187,19 +199,19 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-slate-700 mb-2">Shift End Time</label>
-                                        <input 
-                                            type="time" 
+                                        <input
+                                            type="time"
                                             value={settingsForm.data.shift_end_time}
                                             onChange={e => settingsForm.setData('shift_end_time', e.target.value)}
                                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-2">Lateness Penalty (Rp / Minute)</label>
-                                    <input 
-                                        type="number" 
+                                    <input
+                                        type="number"
                                         value={settingsForm.data.lateness_penalty_per_minute}
                                         onChange={e => settingsForm.setData('lateness_penalty_per_minute', Number(e.target.value))}
                                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
@@ -208,8 +220,8 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-100 flex justify-end">
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         disabled={settingsForm.processing}
                                         className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full hover:bg-blue-700 transition-colors shadow-sm"
                                     >
@@ -223,12 +235,12 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                     {activeTab === 'categories' && (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900">Payroll Rules</h2>
-                            
+
                             <form onSubmit={addCategory} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row gap-4 items-end">
                                 <div className="flex-1 w-full">
                                     <label className="block text-sm font-medium text-slate-700 mb-2">Rule Name (e.g., Overtime)</label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         value={categoryForm.data.name}
                                         onChange={e => categoryForm.setData('name', e.target.value)}
                                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
@@ -237,7 +249,7 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                 </div>
                                 <div className="w-full md:w-48">
                                     <label className="block text-sm font-medium text-slate-700 mb-2">Type</label>
-                                    <select 
+                                    <select
                                         value={categoryForm.data.type}
                                         onChange={e => categoryForm.setData('type', e.target.value)}
                                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
@@ -246,7 +258,7 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                         <option value="deduction">Deduction (-)</option>
                                     </select>
                                 </div>
-                                <button 
+                                <button
                                     type="submit"
                                     disabled={categoryForm.processing}
                                     className="px-6 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors shadow-sm w-full md:w-auto h-[46px]"
@@ -269,9 +281,9 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                                         <div className="text-xs text-slate-500 capitalize">{cat.type}</div>
                                                     </div>
                                                 </div>
-                                                <Link 
-                                                    href={`/categories/${cat.id}`} 
-                                                    method="delete" 
+                                                <Link
+                                                    href={`/categories/${cat.id}`}
+                                                    method="delete"
                                                     as="button"
                                                     className="text-xs font-medium text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
                                                 >

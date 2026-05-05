@@ -9,21 +9,33 @@ use Illuminate\Support\Facades\Auth;
 
 class TenantScope implements Scope
 {
+    protected static $isApplying = false;
+
     /**
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (Auth::guard('web')->check()) {
-            $user = Auth::guard('web')->user();
-            if ($user->room) {
-                $builder->where($model->getTable() . '.room_id', $user->room->id);
+        if (app()->runningInConsole() || static::$isApplying) {
+            return;
+        }
+
+        static::$isApplying = true;
+
+        try {
+            if (Auth::guard('web')->check()) {
+                $user = Auth::guard('web')->user();
+                if ($user && $user->room) {
+                    $builder->where($model->getTable() . '.room_id', $user->room->id);
+                }
+            } elseif (Auth::guard('employee')->check()) {
+                $employee = Auth::guard('employee')->user();
+                if ($employee && $employee->room_id) {
+                    $builder->where($model->getTable() . '.room_id', $employee->room_id);
+                }
             }
-        } elseif (Auth::guard('employee')->check()) {
-            $employee = Auth::guard('employee')->user();
-            if ($employee->room_id) {
-                $builder->where($model->getTable() . '.room_id', $employee->room_id);
-            }
+        } finally {
+            static::$isApplying = false;
         }
     }
 }

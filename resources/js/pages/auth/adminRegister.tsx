@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 export default function AdminRegister() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        workspace_name: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -44,6 +45,21 @@ export default function AdminRegister() {
                                     placeholder="John Doe"
                                 />
                                 {errors.name && <p className="mt-2 text-sm text-rose-600">{errors.name}</p>}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700">Workspace Name</label>
+                            <div className="mt-1.5">
+                                <input
+                                    type="text"
+                                    required
+                                    value={data.workspace_name}
+                                    onChange={e => setData('workspace_name', e.target.value)}
+                                    className="appearance-none block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors text-sm"
+                                    placeholder="Acme Corp Payroll"
+                                />
+                                {errors.workspace_name && <p className="mt-2 text-sm text-rose-600">{errors.workspace_name}</p>}
                             </div>
                         </div>
 
