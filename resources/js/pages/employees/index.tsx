@@ -18,6 +18,17 @@ interface Props {
     errors?: any;
 }
 
+const formatDisplay = (val: string | number) => {
+    if (val === '' || val === 0 || val === '0') return '';
+    const parts = val.toString().split('.');
+    const integer = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return parts.length > 1 ? `${integer},${parts[1]}` : integer;
+};
+
+const parseDisplay = (val: string) => {
+    return val.replace(/\./g, '').replace(',', '.');
+};
+
 export default function EmployeesIndex({ employees, flash, errors }: Props) {
     const [editingId, setEditingId] = useState<number | null>(null);
 
@@ -133,33 +144,87 @@ export default function EmployeesIndex({ employees, flash, errors }: Props) {
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Base Salary (Rp)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={editForm.data.base_salary} 
-                                                        onChange={e => editForm.setData('base_salary', Number(e.target.value))}
-                                                        className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm font-mono"
-                                                        required
-                                                    />
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                            <span className="text-slate-400 font-bold text-sm">Rp</span>
+                                                        </div>
+                                                        <input 
+                                                            type="text" 
+                                                            value={formatDisplay(editForm.data.base_salary)} 
+                                                            placeholder="0"
+                                                            onChange={e => {
+                                                                const raw = parseDisplay(e.target.value);
+                                                                if (/^[0-9.]*$/.test(raw)) {
+                                                                    const parts = raw.split('.');
+                                                                    if (parts.length <= 2) {
+                                                                        editForm.setData('base_salary', raw === '' ? 0 : raw);
+                                                                    }
+                                                                }
+                                                            }}
+                                                            onBlur={e => {
+                                                                const val = parseFloat(parseDisplay(e.target.value));
+                                                                editForm.setData('base_salary', isNaN(val) ? 0 : val);
+                                                            }}
+                                                            className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm font-mono"
+                                                            required
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="space-y-4">
                                                 <div>
                                                     <label className="block text-sm font-semibold text-emerald-700 mb-1">Fixed Monthly Allowance (+)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={editForm.data.allowance} 
-                                                        onChange={e => editForm.setData('allowance', Number(e.target.value))}
-                                                        className="w-full px-4 py-2.5 bg-white border border-emerald-200 focus:border-emerald-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm font-mono"
-                                                    />
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                            <span className="text-emerald-400 font-bold text-sm">Rp</span>
+                                                        </div>
+                                                        <input 
+                                                            type="text" 
+                                                            value={formatDisplay(editForm.data.allowance)} 
+                                                            placeholder="0"
+                                                            onChange={e => {
+                                                                const raw = parseDisplay(e.target.value);
+                                                                if (/^[0-9.]*$/.test(raw)) {
+                                                                    const parts = raw.split('.');
+                                                                    if (parts.length <= 2) {
+                                                                        editForm.setData('allowance', raw === '' ? 0 : raw);
+                                                                    }
+                                                                }
+                                                            }}
+                                                            onBlur={e => {
+                                                                const val = parseFloat(parseDisplay(e.target.value));
+                                                                editForm.setData('allowance', isNaN(val) ? 0 : val);
+                                                            }}
+                                                            className="w-full pl-12 pr-4 py-2.5 bg-white border border-emerald-200 focus:border-emerald-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm font-mono"
+                                                        />
+                                                    </div>
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-semibold text-rose-700 mb-1">Fixed Monthly Deduction (-)</label>
-                                                    <input 
-                                                        type="number" 
-                                                        value={editForm.data.deduction} 
-                                                        onChange={e => editForm.setData('deduction', Number(e.target.value))}
-                                                        className="w-full px-4 py-2.5 bg-white border border-rose-200 focus:border-rose-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all shadow-sm font-mono"
-                                                    />
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                            <span className="text-rose-400 font-bold text-sm">Rp</span>
+                                                        </div>
+                                                        <input 
+                                                            type="text" 
+                                                            value={formatDisplay(editForm.data.deduction)} 
+                                                            placeholder="0"
+                                                            onChange={e => {
+                                                                const raw = parseDisplay(e.target.value);
+                                                                if (/^[0-9.]*$/.test(raw)) {
+                                                                    const parts = raw.split('.');
+                                                                    if (parts.length <= 2) {
+                                                                        editForm.setData('deduction', raw === '' ? 0 : raw);
+                                                                    }
+                                                                }
+                                                            }}
+                                                            onBlur={e => {
+                                                                const val = parseFloat(parseDisplay(e.target.value));
+                                                                editForm.setData('deduction', isNaN(val) ? 0 : val);
+                                                            }}
+                                                            className="w-full pl-12 pr-4 py-2.5 bg-white border border-rose-200 focus:border-rose-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all shadow-sm font-mono"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -203,18 +268,18 @@ export default function EmployeesIndex({ employees, flash, errors }: Props) {
                                             <div className="space-y-1 bg-slate-50 p-4 rounded-2xl border border-slate-100 w-full md:w-auto min-w-[200px]">
                                                 <div className="flex justify-between text-sm">
                                                     <span className="text-slate-500">Base Salary</span>
-                                                    <span className="font-bold text-slate-900">Rp {emp.base_salary.toLocaleString()}</span>
+                                                    <span className="font-bold text-slate-900">Rp {Number(emp.base_salary).toLocaleString('id-ID')}</span>
                                                 </div>
                                                 {emp.allowance > 0 && (
                                                     <div className="flex justify-between text-sm">
                                                         <span className="text-emerald-600">Allowance</span>
-                                                        <span className="font-medium text-emerald-700">+Rp {emp.allowance.toLocaleString()}</span>
+                                                        <span className="font-medium text-emerald-700">+Rp {Number(emp.allowance).toLocaleString('id-ID')}</span>
                                                     </div>
                                                 )}
                                                 {emp.deduction > 0 && (
                                                     <div className="flex justify-between text-sm">
                                                         <span className="text-rose-600">Deduction</span>
-                                                        <span className="font-medium text-rose-700">-Rp {emp.deduction.toLocaleString()}</span>
+                                                        <span className="font-medium text-rose-700">-Rp {Number(emp.deduction).toLocaleString('id-ID')}</span>
                                                     </div>
                                                 )}
                                             </div>

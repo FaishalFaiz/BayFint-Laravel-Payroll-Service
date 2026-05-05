@@ -158,7 +158,7 @@ export default function EmployeeDashboard({ employee, attendances, payrolls, fla
                                     <div key={p.id} className="bg-white/10 hover:bg-white/20 transition-colors rounded-2xl p-4 border border-white/5 flex items-center justify-between group cursor-pointer">
                                         <div>
                                             <div className="text-sm font-medium text-slate-300 mb-1">{p.month}/{p.year}</div>
-                                            <div className="font-bold text-white tracking-wide">Rp {p.total_salary.toLocaleString()}</div>
+                                            <div className="font-bold text-white tracking-wide">Rp {Number(p.total_salary).toLocaleString('id-ID')}</div>
                                         </div>
                                         <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                                     </div>

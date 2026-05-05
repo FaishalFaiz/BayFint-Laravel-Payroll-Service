@@ -96,7 +96,7 @@ export default function PayrollsIndex({ employees, payrolls, flash, errors }: Pr
                                         <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
                                             <div className="text-right">
                                                 <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Net Pay</div>
-                                                <div className="font-bold text-lg text-slate-900">Rp {payroll.total_salary.toLocaleString()}</div>
+                                                <div className="font-bold text-lg text-slate-900">Rp {Number(payroll.total_salary).toLocaleString('id-ID')}</div>
                                             </div>
                                             <Link
                                                 href={`/payrolls/${payroll.id}`}

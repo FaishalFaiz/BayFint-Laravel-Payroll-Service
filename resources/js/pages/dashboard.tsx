@@ -13,6 +13,18 @@ interface Props {
     flash?: { success?: string };
 }
 
+const formatDisplay = (val: string | number) => {
+    if (val === '' || val === 0 || val === '0') return '';
+    const parts = val.toString().split('.');
+    const integer = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return parts.length > 1 ? `${integer},${parts[1]}` : integer;
+};
+
+const parseDisplay = (val: string) => {
+    // Remove dots (thousands) and replace comma with dot (decimal)
+    return val.replace(/\./g, '').replace(',', '.');
+};
+
 export default function Dashboard({ auth, room, categories, stats, flash }: Props) {
     const [activeTab, setActiveTab] = useState('overview');
 
@@ -139,7 +151,7 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
                                 </div>
                                 <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 shadow-md text-white">
                                     <div className="text-sm font-medium text-blue-100 mb-1">Total Payroll (This Month)</div>
-                                    <div className="text-3xl font-bold">Rp {stats.total_payroll.toLocaleString()}</div>
+                                    <div className="text-3xl font-bold">Rp {Number(stats.total_payroll).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
                                 </div>
                                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                                     <div className="text-sm font-medium text-slate-500 mb-1">Pending Generation</div>
@@ -210,12 +222,30 @@ export default function Dashboard({ auth, room, categories, stats, flash }: Prop
 
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-2">Lateness Penalty (Rp / Minute)</label>
-                                    <input
-                                        type="number"
-                                        value={settingsForm.data.lateness_penalty_per_minute}
-                                        onChange={e => settingsForm.setData('lateness_penalty_per_minute', Number(e.target.value))}
-                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-                                    />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <span className="text-slate-400 font-bold text-sm">Rp</span>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={formatDisplay(settingsForm.data.lateness_penalty_per_minute)}
+                                            placeholder="0"
+                                            onChange={e => {
+                                                const raw = parseDisplay(e.target.value);
+                                                if (/^[0-9.]*$/.test(raw)) {
+                                                    const parts = raw.split('.');
+                                                    if (parts.length <= 2) {
+                                                        settingsForm.setData('lateness_penalty_per_minute', raw === '' ? 0 : raw);
+                                                    }
+                                                }
+                                            }}
+                                            onBlur={e => {
+                                                const val = parseFloat(parseDisplay(e.target.value));
+                                                settingsForm.setData('lateness_penalty_per_minute', isNaN(val) ? 0 : val);
+                                            }}
+                                            className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono"
+                                        />
+                                    </div>
                                     <p className="mt-2 text-xs text-slate-500">This amount will be deducted for every minute an employee clocks in late.</p>
                                 </div>
 
