@@ -13,11 +13,23 @@ class RoomController extends Controller
             'name' => 'required|string|max:255',
             'shift_start_time' => 'required|date_format:H:i',
             'shift_end_time' => 'required|date_format:H:i',
-            'lateness_penalty_per_minute' => 'required|numeric|min:0',
+            'late_grace_period' => 'required|integer|min:0',
+            'overtime_min_duration' => 'required|integer|min:0',
+            'late_rule_type' => 'required|in:fixed,variable',
+            'late_amount' => 'required|numeric|min:0',
+            'overtime_rule_type' => 'required|in:fixed,variable',
+            'overtime_amount' => 'required|numeric|min:0',
+            'absence_amount' => 'required|numeric|min:0',
         ]);
 
         $room = $request->user()->room;
-        $room->update($request->only('name', 'shift_start_time', 'shift_end_time', 'lateness_penalty_per_minute'));
+        $room->update($request->only([
+            'name', 'shift_start_time', 'shift_end_time', 
+            'late_grace_period', 'overtime_min_duration', 
+            'late_rule_type', 'late_amount', 
+            'overtime_rule_type', 'overtime_amount', 
+            'absence_amount'
+        ]));
 
         return back()->with('success', 'Room settings updated.');
     }

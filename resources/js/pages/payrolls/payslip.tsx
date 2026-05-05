@@ -97,6 +97,18 @@ export default function Payslip({ payroll }: Props) {
                                     <div className="text-sm font-medium text-slate-700">Fixed Allowance</div>
                                     <div className="font-semibold text-slate-900">Rp {d.fixed_allowance.toLocaleString()}</div>
                                 </div>
+                                {d.overtime?.bonus > 0 && (
+                                    <div className="px-6 py-4 flex justify-between items-center">
+                                        <div className="text-sm font-medium text-slate-700">Overtime Bonus ({d.overtime.count} Sessions / {d.overtime.minutes} Min)</div>
+                                        <div className="font-semibold text-emerald-600">+Rp {d.overtime.bonus.toLocaleString()}</div>
+                                    </div>
+                                )}
+                                {d.custom?.allowance > 0 && (
+                                    <div className="px-6 py-4 flex justify-between items-center">
+                                        <div className="text-sm font-medium text-slate-700">Custom Bonuses / Allowances</div>
+                                        <div className="font-semibold text-emerald-600">+Rp {d.custom.allowance.toLocaleString()}</div>
+                                    </div>
+                                )}
 
                                 {/* Deductions Section */}
                                 <div className="px-6 py-4 flex items-center gap-3 bg-rose-50/50">
@@ -108,10 +120,24 @@ export default function Payslip({ payroll }: Props) {
                                     <div className="text-sm font-medium text-slate-700">Fixed Deduction</div>
                                     <div className="font-semibold text-rose-600">-Rp {d.fixed_deduction.toLocaleString()}</div>
                                 </div>
-                                <div className="px-6 py-4 flex justify-between items-center">
-                                    <div className="text-sm font-medium text-slate-700">Lateness Penalty ({d.days_present} Days Present)</div>
-                                    <div className="font-semibold text-rose-600">-Rp {d.total_lateness_penalty.toLocaleString()}</div>
-                                </div>
+                                {d.lateness?.penalty > 0 && (
+                                    <div className="px-6 py-4 flex justify-between items-center">
+                                        <div className="text-sm font-medium text-slate-700">Lateness Penalty ({d.lateness.count} Times / {d.lateness.minutes} Min)</div>
+                                        <div className="font-semibold text-rose-600">-Rp {d.lateness.penalty.toLocaleString()}</div>
+                                    </div>
+                                )}
+                                {d.absences?.penalty > 0 && (
+                                    <div className="px-6 py-4 flex justify-between items-center">
+                                        <div className="text-sm font-medium text-slate-700">Absence Penalty ({d.absences.count} Approved Izin)</div>
+                                        <div className="font-semibold text-rose-600">-Rp {d.absences.penalty.toLocaleString()}</div>
+                                    </div>
+                                )}
+                                {d.custom?.deduction > 0 && (
+                                    <div className="px-6 py-4 flex justify-between items-center">
+                                        <div className="text-sm font-medium text-slate-700">Custom Deductions</div>
+                                        <div className="font-semibold text-rose-600">-Rp {d.custom.deduction.toLocaleString()}</div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

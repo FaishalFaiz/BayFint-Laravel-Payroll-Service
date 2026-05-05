@@ -4,16 +4,29 @@ interface Props {
     employee: any;
     attendances: any[];
     payrolls: any[];
+    leaves: any[];
     flash?: { success?: string };
     errors?: any;
 }
 
-export default function EmployeeDashboard({ employee, attendances, payrolls, flash, errors }: Props) {
+export default function EmployeeDashboard({ employee, attendances, payrolls, leaves, flash, errors }: Props) {
     const clockInForm = useForm({});
     const clockOutForm = useForm({});
 
     const handleClockIn = () => clockInForm.post('/attendance/clock-in');
     const handleClockOut = () => clockOutForm.post('/attendance/clock-out');
+
+    const leaveForm = useForm({
+        date: new Date().toISOString().split('T')[0],
+        reason: '',
+    });
+
+    const handleLeaveRequest = (e: React.FormEvent) => {
+        e.preventDefault();
+        leaveForm.post('/leaves', {
+            onSuccess: () => leaveForm.reset('reason'),
+        });
+    };
 
     const todayAttendance = attendances.find(a => new Date(a.date).toDateString() === new Date().toDateString());
 
@@ -97,6 +110,69 @@ export default function EmployeeDashboard({ employee, attendances, payrolls, fla
                         </div>
                     </section>
 
+                    {/* Izin / Absence Request */}
+                    <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+                        <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            Request Izin (Absence)
+                        </h3>
+                        <form onSubmit={handleLeaveRequest} className="space-y-4">
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Date</label>
+                                    <input 
+                                        type="date" 
+                                        value={leaveForm.data.date} 
+                                        onChange={e => leaveForm.setData('date', e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Reason</label>
+                                    <input 
+                                        type="text" 
+                                        value={leaveForm.data.reason} 
+                                        onChange={e => leaveForm.setData('reason', e.target.value)}
+                                        placeholder="e.g. Sakit, Keperluan Keluarga"
+                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <button 
+                                type="submit" 
+                                disabled={leaveForm.processing}
+                                className="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-sm"
+                            >
+                                Submit Request
+                            </button>
+                        </form>
+
+                        {leaves.length > 0 && (
+                            <div className="mt-8 border-t border-slate-100 pt-6">
+                                <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Request Status</h4>
+                                <div className="space-y-3">
+                                    {leaves.map(leave => (
+                                        <div key={leave.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <div>
+                                                <div className="font-bold text-slate-900">{new Date(leave.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                                                <div className="text-xs text-slate-500">{leave.reason}</div>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                                leave.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
+                                                leave.status === 'rejected' ? 'bg-rose-100 text-rose-700' :
+                                                'bg-amber-100 text-amber-700'
+                                            }`}>
+                                                {leave.status}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </section>
+
                     {/* Attendance History */}
                     <section className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                         <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
@@ -115,7 +191,7 @@ export default function EmployeeDashboard({ employee, attendances, payrolls, fla
                                             </div>
                                             <div>
                                                 <div className="text-sm font-semibold text-slate-900">
-                                                    In: {new Date(a.clock_in).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                                    In: {a.clock_in ? new Date(a.clock_in).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--'}
                                                     {a.clock_out && ` - Out: ${new Date(a.clock_out).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
                                                 </div>
                                             </div>

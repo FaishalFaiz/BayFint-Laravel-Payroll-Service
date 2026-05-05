@@ -8,6 +8,8 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\PayrollCategoryController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\PayrollAdjustmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -54,11 +56,18 @@ Route::middleware('auth:web,employee')->group(function () {
         Route::post('payrolls', [PayrollController::class, 'store'])->name('payrolls.store');
         Route::get('payrolls/{payroll}', [PayrollController::class, 'show'])->name('payrolls.show');
         Route::delete('payrolls/{payroll}', [PayrollController::class, 'destroy'])->name('payrolls.destroy');
+        Route::post('payrolls/reset-employee', [PayrollController::class, 'resetEmployee'])->name('payrolls.reset-employee');
+        Route::post('payrolls/mass-reset', [PayrollController::class, 'massReset'])->name('payrolls.mass-reset');
+
+        Route::patch('/leaves/{leave}', [LeaveController::class, 'update'])->name('leaves.update');
+        Route::post('/adjustments', [PayrollAdjustmentController::class, 'store'])->name('adjustments.store');
+        Route::delete('/adjustments/{adjustment}', [PayrollAdjustmentController::class, 'destroy'])->name('adjustments.destroy');
     });
 
     // Only Employee routes
     Route::middleware('auth:employee')->group(function() {
         Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
         Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+        Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     });
 });

@@ -51,4 +51,14 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(Payroll::class);
     }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    public function adjustments()
+    {
+        return $this->hasMany(PayrollAdjustment::class);
+    }
 }

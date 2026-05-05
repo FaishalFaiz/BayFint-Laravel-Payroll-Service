@@ -27,11 +27,9 @@ class AttendanceController extends Controller
         $shiftStart = Carbon::parse($today . ' ' . $room->shift_start_time);
         
         $minutesLate = 0;
-        $latenessPenalty = 0;
-
-        if ($now->greaterThan($shiftStart)) {
-            $minutesLate = $now->diffInMinutes($shiftStart);
-            $latenessPenalty = $minutesLate * $room->lateness_penalty_per_minute;
+        $diff = $shiftStart->diffInMinutes($now, false);
+        if ($diff > $room->late_grace_period) {
+            $minutesLate = $diff;
         }
 
         Attendance::create([
@@ -41,7 +39,7 @@ class AttendanceController extends Controller
             'clock_in' => $now,
             'status' => 'present',
             'minutes_late' => $minutesLate,
-            'lateness_penalty' => $latenessPenalty,
+            'lateness_penalty' => 0, // Calculated at generation time
         ]);
 
         return back()->with('success', 'Successfully clocked in at ' . $now->format('H:i'));

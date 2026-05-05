@@ -13,7 +13,13 @@ class Room extends Model
         'code_expires_at',
         'shift_start_time',
         'shift_end_time',
-        'lateness_penalty_per_minute',
+        'late_grace_period',
+        'overtime_min_duration',
+        'late_rule_type',
+        'late_amount',
+        'overtime_rule_type',
+        'overtime_amount',
+        'absence_amount',
     ];
 
     protected function casts(): array

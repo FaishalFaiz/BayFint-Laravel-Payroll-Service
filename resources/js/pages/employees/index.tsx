@@ -19,9 +19,13 @@ interface Props {
 }
 
 const formatDisplay = (val: string | number) => {
-    if (val === '' || val === 0 || val === '0') return '';
+    if (val === '' || val === 0 || val === '0') {
+return '';
+}
+
     const parts = val.toString().split('.');
     const integer = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
     return parts.length > 1 ? `${integer},${parts[1]}` : integer;
 };
 
@@ -154,8 +158,10 @@ export default function EmployeesIndex({ employees, flash, errors }: Props) {
                                                             placeholder="0"
                                                             onChange={e => {
                                                                 const raw = parseDisplay(e.target.value);
+
                                                                 if (/^[0-9.]*$/.test(raw)) {
                                                                     const parts = raw.split('.');
+
                                                                     if (parts.length <= 2) {
                                                                         editForm.setData('base_salary', raw === '' ? 0 : raw);
                                                                     }
@@ -184,8 +190,10 @@ export default function EmployeesIndex({ employees, flash, errors }: Props) {
                                                             placeholder="0"
                                                             onChange={e => {
                                                                 const raw = parseDisplay(e.target.value);
+
                                                                 if (/^[0-9.]*$/.test(raw)) {
                                                                     const parts = raw.split('.');
+
                                                                     if (parts.length <= 2) {
                                                                         editForm.setData('allowance', raw === '' ? 0 : raw);
                                                                     }
@@ -211,8 +219,10 @@ export default function EmployeesIndex({ employees, flash, errors }: Props) {
                                                             placeholder="0"
                                                             onChange={e => {
                                                                 const raw = parseDisplay(e.target.value);
+
                                                                 if (/^[0-9.]*$/.test(raw)) {
                                                                     const parts = raw.split('.');
+
                                                                     if (parts.length <= 2) {
                                                                         editForm.setData('deduction', raw === '' ? 0 : raw);
                                                                     }
