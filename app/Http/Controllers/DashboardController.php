@@ -36,7 +36,9 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard', [
             'room' => $room,
-            'categories' => \App\Models\PayrollCategory::all(), // Scoped!
+            'categories' => \App\Models\PayrollCategory::all(),
+            'employees' => Employee::all(),
+            'payrolls' => Payroll::with('employee')->latest()->get(),
             'stats' => [
                 'total_employees' => $totalEmployees,
                 'total_payroll' => $totalPayrollThisMonth,
