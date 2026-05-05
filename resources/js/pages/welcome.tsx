@@ -137,6 +137,77 @@ export default function Welcome({ auth }: Props) {
                     </div>
                 </div>
             </section>
+            {/* Workflow Section */}
+            <section id="workflow" className="py-24 bg-slate-50 relative overflow-hidden">
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="text-center max-w-3xl mx-auto mb-20">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Simplified Workflow</h2>
+                        <p className="text-slate-600 text-lg">Getting your team onboarded and paid has never been this straightforward.</p>
+                    </div>
+
+                    <div className="relative">
+                        {/* Connection Line (Desktop) */}
+                        <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -translate-y-1/2 z-0"></div>
+                        
+                        <div className="grid lg:grid-cols-5 gap-8 relative z-10">
+                            {/* Step 1 */}
+                            <div className="flex flex-col items-center text-center group">
+                                <div className="w-16 h-16 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl mb-6 shadow-xl transition-transform group-hover:scale-110">1</div>
+                                <h4 className="font-bold text-slate-900 mb-2">Create Workspace</h4>
+                                <p className="text-sm text-slate-500 px-4">Admin registers and initializes a dedicated payroll room for the company.</p>
+                            </div>
+
+                            {/* Step 2 */}
+                            <div className="flex flex-col items-center text-center group">
+                                <div className="w-16 h-16 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center text-slate-400 font-bold text-xl mb-6 shadow-lg transition-transform group-hover:scale-110 group-hover:border-blue-400 group-hover:text-blue-500">2</div>
+                                <h4 className="font-bold text-slate-900 mb-2">Generate Access</h4>
+                                <p className="text-sm text-slate-500 px-4">Admin generates a secure, time-limited room code for personnel to join.</p>
+                            </div>
+
+                            {/* Step 3 */}
+                            <div className="flex flex-col items-center text-center group">
+                                <div className="w-16 h-16 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center text-slate-400 font-bold text-xl mb-6 shadow-lg transition-transform group-hover:scale-110 group-hover:border-blue-400 group-hover:text-blue-500">3</div>
+                                <h4 className="font-bold text-slate-900 mb-2">Team Enrollment</h4>
+                                <p className="text-sm text-slate-500 px-4">Employees use the code to register and automatically join your workspace.</p>
+                            </div>
+
+                            {/* Step 4 */}
+                            <div className="flex flex-col items-center text-center group">
+                                <div className="w-16 h-16 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center text-slate-400 font-bold text-xl mb-6 shadow-lg transition-transform group-hover:scale-110 group-hover:border-blue-400 group-hover:text-blue-500">4</div>
+                                <h4 className="font-bold text-slate-900 mb-2">Operational Sync</h4>
+                                <p className="text-sm text-slate-500 px-4">Employees log attendances daily while Admin configures payroll rules.</p>
+                            </div>
+
+                            {/* Step 5 */}
+                            <div className="flex flex-col items-center text-center group">
+                                <div className="w-16 h-16 bg-blue-600 border-4 border-blue-100 rounded-full flex items-center justify-center text-white font-bold text-xl mb-6 shadow-xl transition-transform group-hover:scale-110">5</div>
+                                <h4 className="font-bold text-slate-900 mb-2">Secure Payouts</h4>
+                                <p className="text-sm text-slate-500 px-4">Admin generates immutable payslips with automated salary calculations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-20 flex flex-col md:flex-row items-center justify-center gap-12 bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm">
+                        <div className="flex flex-col items-center text-center md:items-start md:text-left gap-4 max-w-xs">
+                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">For Employers</h3>
+                            <p className="text-sm text-slate-500">Take full control of your room, generate codes, and manage your personnel data from a single secure dashboard.</p>
+                            <Link href="/register" className="text-sm font-bold text-blue-600 hover:text-blue-700">Create Admin Account →</Link>
+                        </div>
+                        <div className="hidden md:block w-px h-32 bg-slate-100"></div>
+                        <div className="flex flex-col items-center text-center md:items-start md:text-left gap-4 max-w-xs">
+                            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">For Employees</h3>
+                            <p className="text-sm text-slate-500">Join your team instantly using a room code, track your attendance, and access your payslip vault anytime.</p>
+                            <Link href="/employee/register" className="text-sm font-bold text-indigo-600 hover:text-indigo-700">Join a Workspace →</Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {/* Dashboard Preview Section */}
             <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
